@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Digitale Visitenkarten – Verwaltung</title>
+<style>
+:root{--g:#04302A;--t:#00746F;--gold:#C2994E;--txt:#1E2122;--bg:#F9F8F4;--mut:#7D7D7A;--white:#fff;--red:#9f2d2d}*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#eef0ed;color:var(--txt)}.wrap{max-width:1180px;margin:0 auto;padding:24px}.top{display:flex;justify-content:space-between;gap:16px;align-items:center;margin-bottom:20px}.top h1{margin:0;color:var(--g)}.top p{margin:5px 0 0;color:var(--mut)}button{border:0;border-radius:8px;background:var(--g);color:#fff;padding:11px 16px;font-weight:700;cursor:pointer}.secondary{background:#e5e8e5;color:var(--g)}.danger{background:var(--red)}.login,.panel{background:#fff;border-radius:14px;box-shadow:0 4px 22px rgba(0,0,0,.08)}.login{max-width:520px;margin:60px auto;padding:28px}.login h2{margin-top:0;color:var(--g)}label{display:block;font-size:13px;font-weight:700;margin:12px 0 5px}input,select,textarea{width:100%;padding:10px 11px;border:1px solid #ccd1ce;border-radius:7px;font:inherit}.grid{display:grid;grid-template-columns:310px 1fr;gap:18px}.panel{padding:18px}.list button{width:100%;text-align:left;margin:0 0 7px;background:#f1f3f1;color:var(--txt);font-weight:500}.list button.active{background:var(--g);color:#fff}.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}.notice{padding:10px 12px;border-radius:7px;margin:10px 0;background:#f2eee5;color:#69511f;display:none}.notice.show{display:block}.locked{display:none}.help{font-size:13px;color:var(--mut);line-height:1.5}.badge{display:inline-block;background:#e9f1ef;color:var(--g);padding:4px 8px;border-radius:99px;font-size:12px;font-weight:700}@media(max-width:800px){.wrap{padding:14px}.top{align-items:flex-start;flex-direction:column}.grid{grid-template-columns:1fr}.row{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div id="login" class="login">
+    <span class="badge">Geschützte Verwaltung</span>
+    <h2>Digitale Visitenkarten</h2>
+    <p class="help">Diese Verwaltungsseite umgeht die PlentyONE-Backend-Menüberechtigungen. Gib den Verwaltungsschlüssel ein, den du in der Plugin-Konfiguration hinterlegt hast.</p>
+    <label for="adminKey">Verwaltungsschlüssel</label>
+    <input id="adminKey" type="password" autocomplete="current-password">
+    <div class="actions"><button id="loginBtn">Öffnen</button></div>
+    <div id="loginNotice" class="notice"></div>
+  </div>
+
+  <div id="app" class="locked">
+    <div class="top"><div><h1>Digitale Visitenkarten</h1><p>Nutzer anlegen und Frontendkarten pflegen.</p></div><div><button id="newBtn">+ Neue Karte</button> <button id="logoutBtn" class="secondary">Sperren</button></div></div>
+    <div id="notice" class="notice"></div>
+    <div class="grid">
+      <aside class="panel"><h2>Karten</h2><div id="list" class="list"></div></aside>
+      <section class="panel"><form id="form">
+        <input type="hidden" id="id">
+        <div class="row"><label>Slug<input id="slug" required placeholder="maik"></label><label>Aktiv<select id="active"><option value="1">Ja</option><option value="0">Nein</option></select></label></div>
+        <div class="row"><label>Vorname<input id="firstName"></label><label>Nachname<input id="lastName"></label></div>
+        <label>Anzeigename<input id="displayName" placeholder="Maik Röseler"></label>
+        <label>Position<input id="position" placeholder="Geschäftsführer | CEO"></label>
+        <label>Firma<input id="company" value="Four & more GmbH"></label>
+        <div class="row"><label>Telefon<input id="phone"></label><label>E-Mail<input id="email" type="email"></label></div>
+        <label>Website<input id="website" placeholder="https://four-more.net"></label>
+        <label>Logo-URL<input id="logoUrl" placeholder="https://.../logo.svg"></label>
+        <div class="row"><label>Straße<input id="street"></label><label>PLZ<input id="postalCode"></label></div>
+        <div class="row"><label>Ort<input id="city"></label><label>Land<input id="country" value="Germany"></label></div>
+        <label>Marken (JSON)<textarea id="brandsJson" rows="7" placeholder='[{"name":"Eclipse","logoUrl":"https://...","url":"https://..."}]'></textarea></label>
+        <div class="row"><label>Impressum-URL<input id="imprintUrl"></label><label>Datenschutz-URL<input id="privacyUrl"></label></div>
+        <label>Footer-Claim<input id="footerClaim" value="QUALITÄT FÜR GENERATIONEN"></label>
+        <div class="actions"><button type="submit">Speichern</button><button type="button" id="openBtn" class="secondary">Frontend öffnen</button><button type="button" id="deleteBtn" class="danger">Löschen</button></div>
+      </form></section>
+    </div>
+  </div>
+</div>
+<script>
+(function(){
+const API='/digital-business-card/admin/cards';let cards=[];let key='';
+const ids=['id','slug','firstName','lastName','displayName','position','company','phone','email','website','street','postalCode','city','country','logoUrl','brandsJson','imprintUrl','privacyUrl','footerClaim','active'];
+const $=id=>document.getElementById(id);const show=(el,msg)=>{el.textContent=msg||'';el.classList.toggle('show',!!msg)};
+function headers(json){const h={'X-DBC-Admin-Key':key};if(json)h['Content-Type']='application/json';return h}
+function data(){const o={};ids.forEach(k=>o[k]=$(k).value);return o}
+function fill(c={}){ids.forEach(k=>{if($(k))$(k).value=c[k]??(k==='active'?'1':'')});renderList(c.id)}
+function renderList(active){$('list').innerHTML='';cards.forEach(c=>{const b=document.createElement('button');b.type='button';b.textContent=(c.displayName||((c.firstName||'')+' '+(c.lastName||'')).trim()||c.slug)+'  /'+c.slug;if(c.id==active)b.classList.add('active');b.onclick=()=>fill(c);$('list').appendChild(b)})}
+async function load(){const r=await fetch(API,{headers:headers(false),credentials:'same-origin'});const j=await r.json();if(!r.ok)throw new Error(j.error||'Laden fehlgeschlagen');cards=j;renderList();if(cards[0])fill(cards[0]);}
+async function login(){key=$('adminKey').value.trim();if(!key){show($('loginNotice'),'Bitte Verwaltungsschlüssel eingeben.');return}try{await load();sessionStorage.setItem('dbcAdminKey',key);$('login').style.display='none';$('app').style.display='block';show($('loginNotice'),'')}catch(e){show($('loginNotice'),e.message)}}
+$('loginBtn').onclick=login;$('adminKey').addEventListener('keydown',e=>{if(e.key==='Enter')login()});
+$('logoutBtn').onclick=()=>{key='';sessionStorage.removeItem('dbcAdminKey');location.reload()};
+$('newBtn').onclick=()=>fill({active:1,company:'Four & more GmbH',country:'Germany',footerClaim:'QUALITÄT FÜR GENERATIONEN',brandsJson:'[]'});
+$('form').onsubmit=async e=>{e.preventDefault();show($('notice'),'');let d=data(),id=parseInt(d.id||0);delete d.id;try{JSON.parse(d.brandsJson||'[]')}catch(x){show($('notice'),'Marken-JSON ist ungültig.');return}const r=await fetch(id?API+'/'+id:API,{method:id?'PUT':'POST',headers:headers(true),credentials:'same-origin',body:JSON.stringify(d)});const j=await r.json();if(!r.ok){show($('notice'),j.error||'Speichern fehlgeschlagen.');return}await load();fill(j);show($('notice'),'Gespeichert.')};
+$('deleteBtn').onclick=async()=>{const id=parseInt($('id').value||0);if(!id||!confirm('Karte wirklich löschen?'))return;const r=await fetch(API+'/'+id,{method:'DELETE',headers:headers(false),credentials:'same-origin'});const j=await r.json();if(!r.ok){show($('notice'),j.error||'Löschen fehlgeschlagen.');return}await load();fill({active:1});};
+$('openBtn').onclick=()=>{const s=$('slug').value.trim();if(s)window.open('/visitenkarte/'+encodeURIComponent(s),'_blank')};
+const saved=sessionStorage.getItem('dbcAdminKey');if(saved){key=saved;load().then(()=>{$('login').style.display='none';$('app').style.display='block'}).catch(()=>sessionStorage.removeItem('dbcAdminKey'))}
+})();
+</script>
+</body>
+</html>

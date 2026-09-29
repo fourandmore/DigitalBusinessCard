@@ -1,37 +1,20 @@
-# DigitalBusinessCard 1.0.5
+# DigitalBusinessCard 1.0.7
 
-PlentyONE / plentyShop LTS Plugin für digitale Visitenkarten.
-
-## Backend-Menü
-
-Die Backend-UI wird gemäß PlentyONE `ui.json` unter folgendem Systembaum registriert:
-
-**Einrichtung → Einstellungen → Digitale Visitenkarten**
-
-Verwendete `ui.json`-Werte:
-
-- `menu`: `settings`
-- `urlKey`: `digitale-visitenkarten`
-- `entryPoint`: `index.html`
-
-Die resultierende Backend-Route ist sinngemäß `/settings/digitale-visitenkarten` innerhalb der PlentyONE-Backend-Routingstruktur.
-
-## Wichtig
-
-Das Plugin-Set, in dem dieses Plugin bereitgestellt wurde, muss dem angemeldeten Benutzer auch als **Backend-Plugin-Set** zugeordnet sein. Eine reine Mandanten-/Webshop-Zuordnung reicht für die Backend-UI nicht.
+Digitale Visitenkarten für plentyShop LTS.
 
 ## Frontend
+- Karte: `/visitenkarte/{slug}`
+- vCard: `/visitenkarte/{slug}/kontakt.vcf`
 
-Eine aktive Karte mit dem Slug `maik` ist erreichbar unter:
+## Verwaltung (Fallback ohne PlentyONE Backend-Menürechte)
+Version 1.0.7 enthält zusätzlich eine geschützte Verwaltungsseite im Shop:
 
-`/visitenkarte/maik`
+`/visitenkarten-admin`
 
-Die vCard unter:
+Vorher in der Plugin-Konfiguration unter **Verwaltung** einen Verwaltungsschlüssel mit mindestens 12 Zeichen setzen.
+Die Verwaltungs-API akzeptiert Änderungen nur mit diesem Schlüssel im HTTP-Header `X-DBC-Admin-Key`.
 
-`/visitenkarte/maik/kontakt.vcf`
+Damit kann die Kontaktpflege genutzt werden, selbst wenn PlentyONE den `ui.json`-Menüeintrag wegen der Rollen-/Plugin-Sichtbarkeit nicht freigibt.
 
-## Version 1.0.5
-
-- Plugin-Typ auf `general` gesetzt, da das Plugin Backend-UI und Frontend-Funktionen kombiniert.
-- Backend-Menü strikt nach offizieller PlentyONE-Dokumentation mit `menu: settings` registriert.
-- Vorherige Fixes für den PlentyONE-Codecheck (`esc`, dynamische Property-Namen) bleiben enthalten.
+## Backend-EntryPoint
+Der bestehende Backend-EntryPoint `Start -> Digitale Visitenkarten` bleibt enthalten. Wenn PlentyONE ihn später für die Rolle freigibt, kann er ebenfalls verwendet werden.
