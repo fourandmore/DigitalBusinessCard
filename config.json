@@ -11,6 +11,122 @@
           "label": "Config.adminSecret",
           "options": {
             "tooltip": "Config.adminSecretTooltip",
+            "defaultValue": "",
+            "isPassword": true
+          }
+        }
+      }
+    },
+    "design": {
+      "label": "Config.design",
+      "fullWidth": true,
+      "formFields": {
+        "design.headerLogo": {
+          "type": "inputFile",
+          "required": false,
+          "label": "Config.headerLogo",
+          "options": {
+            "tooltip": "Config.headerLogoTooltip",
+            "defaultValue": ""
+          }
+        },
+        "design.brand1Logo": {
+          "type": "inputFile",
+          "required": false,
+          "label": "Config.brand1Logo",
+          "options": {
+            "tooltip": "Config.brandLogoTooltip",
+            "defaultValue": ""
+          }
+        },
+        "design.brand1Name": {
+          "type": "inputText",
+          "required": false,
+          "label": "Config.brand1Name",
+          "options": {
+            "defaultValue": "Eclipse"
+          }
+        },
+        "design.brand1Url": {
+          "type": "inputText",
+          "required": false,
+          "label": "Config.brand1Url",
+          "options": {
+            "defaultValue": ""
+          }
+        },
+        "design.brand2Logo": {
+          "type": "inputFile",
+          "required": false,
+          "label": "Config.brand2Logo",
+          "options": {
+            "tooltip": "Config.brandLogoTooltip",
+            "defaultValue": ""
+          }
+        },
+        "design.brand2Name": {
+          "type": "inputText",
+          "required": false,
+          "label": "Config.brand2Name",
+          "options": {
+            "defaultValue": "Eclipse Spa"
+          }
+        },
+        "design.brand2Url": {
+          "type": "inputText",
+          "required": false,
+          "label": "Config.brand2Url",
+          "options": {
+            "defaultValue": ""
+          }
+        },
+        "design.brand3Logo": {
+          "type": "inputFile",
+          "required": false,
+          "label": "Config.brand3Logo",
+          "options": {
+            "tooltip": "Config.brandLogoTooltip",
+            "defaultValue": ""
+          }
+        },
+        "design.brand3Name": {
+          "type": "inputText",
+          "required": false,
+          "label": "Config.brand3Name",
+          "options": {
+            "defaultValue": "Mephisto Tools"
+          }
+        },
+        "design.brand3Url": {
+          "type": "inputText",
+          "required": false,
+          "label": "Config.brand3Url",
+          "options": {
+            "defaultValue": ""
+          }
+        },
+        "design.brand4Logo": {
+          "type": "inputFile",
+          "required": false,
+          "label": "Config.brand4Logo",
+          "options": {
+            "tooltip": "Config.brandLogoTooltip",
+            "defaultValue": ""
+          }
+        },
+        "design.brand4Name": {
+          "type": "inputText",
+          "required": false,
+          "label": "Config.brand4Name",
+          "options": {
+            "defaultValue": "Billiard Royal"
+          }
+        },
+        "design.brand4Url": {
+          "type": "inputText",
+          "required": false,
+          "label": "Config.brand4Url",
+          "options": {
             "defaultValue": ""
           }
         }

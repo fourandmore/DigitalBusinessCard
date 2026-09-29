@@ -35,10 +35,10 @@
         <label>Firma<input id="company" value="Four & more GmbH"></label>
         <div class="row"><label>Telefon<input id="phone"></label><label>E-Mail<input id="email" type="email"></label></div>
         <label>Website<input id="website" placeholder="https://four-more.net"></label>
-        <label>Logo-URL<input id="logoUrl" placeholder="https://.../logo.svg"></label>
+        <p class="help"><strong>Logos:</strong> Headerlogo und Markenlogos werden jetzt zentral in der Plugin-Konfiguration unter „Logos & Marken“ gepflegt.</p><input id="logoUrl" type="hidden">
         <div class="row"><label>Straße<input id="street"></label><label>PLZ<input id="postalCode"></label></div>
         <div class="row"><label>Ort<input id="city"></label><label>Land<input id="country" value="Germany"></label></div>
-        <label>Marken (JSON)<textarea id="brandsJson" rows="7" placeholder='[{"name":"Eclipse","logoUrl":"https://...","url":"https://..."}]'></textarea></label>
+        <label style="display:none">Marken (Fallback JSON)<textarea id="brandsJson" rows="2"></textarea></label>
         <div class="row"><label>Impressum-URL<input id="imprintUrl"></label><label>Datenschutz-URL<input id="privacyUrl"></label></div>
         <label>Footer-Claim<input id="footerClaim" value="QUALITÄT FÜR GENERATIONEN"></label>
         <div class="actions"><button type="submit">Speichern</button><button type="button" id="openBtn" class="secondary">Frontend öffnen</button><button type="button" id="deleteBtn" class="danger">Löschen</button></div>

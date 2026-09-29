@@ -18,3 +18,17 @@ Damit kann die Kontaktpflege genutzt werden, selbst wenn PlentyONE den `ui.json`
 
 ## Backend-EntryPoint
 Der bestehende Backend-EntryPoint `Start -> Digitale Visitenkarten` bleibt enthalten. Wenn PlentyONE ihn später für die Rolle freigibt, kann er ebenfalls verwendet werden.
+
+
+## Version 1.0.9 – Logos & Icons
+
+- Headerlogo sowie Markenlogo 1 bis 4 werden zentral in der Plugin-Konfiguration unter **Logos & Marken** über PlentyONE-Dateiauswahl (`inputFile`) gepflegt.
+- Für jede Marke können zusätzlich Name und Ziel-URL hinterlegt werden.
+- Die Frontend-Aktionssymbole wurden durch klare Outline-SVGs im Stil der gelieferten Referenz ersetzt (Kontakt, Telefon, E-Mail, Website, Standort).
+- Per-Nutzer-Logo und Marken-JSON bleiben intern nur als Fallback erhalten.
+
+
+## 1.0.9
+- Mobile Frontend-Abstände und Größen näher an die Referenz angepasst.
+- Aktionskarten mit warmem Off-White, feiner Kontur und angepassten Radien.
+- Logo-, Adress-, Marken- und Footer-Abstände für Smartphone-Darstellung verfeinert.

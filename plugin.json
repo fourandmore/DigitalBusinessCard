@@ -4,7 +4,7 @@
   "namespace": "DigitalBusinessCard",
   "author": "Four & more GmbH",
   "type": "backend",
-  "version": "1.0.7",
+  "version": "1.0.9",
   "serviceProvider": "DigitalBusinessCard\\Providers\\DigitalBusinessCardServiceProvider",
   "runOnBuild": [
     "DigitalBusinessCard\\Migrations\\CreateBusinessCardTable"

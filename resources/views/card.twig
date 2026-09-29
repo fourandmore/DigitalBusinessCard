@@ -8,37 +8,73 @@
   <link rel="stylesheet" href="{{ plugin_path('DigitalBusinessCard') }}/css/card.css">
 </head>
 <body>
+{% set headerLogo = config('DigitalBusinessCard.design.headerLogo') %}
+{% set brandSlots = [
+  {'logo': config('DigitalBusinessCard.design.brand1Logo'), 'name': config('DigitalBusinessCard.design.brand1Name'), 'url': config('DigitalBusinessCard.design.brand1Url')},
+  {'logo': config('DigitalBusinessCard.design.brand2Logo'), 'name': config('DigitalBusinessCard.design.brand2Name'), 'url': config('DigitalBusinessCard.design.brand2Url')},
+  {'logo': config('DigitalBusinessCard.design.brand3Logo'), 'name': config('DigitalBusinessCard.design.brand3Name'), 'url': config('DigitalBusinessCard.design.brand3Url')},
+  {'logo': config('DigitalBusinessCard.design.brand4Logo'), 'name': config('DigitalBusinessCard.design.brand4Name'), 'url': config('DigitalBusinessCard.design.brand4Url')}
+] %}
 <main class="dbc-shell">
   <section class="dbc-card">
     <div class="dbc-content">
-      {% if card.logoUrl %}<img class="dbc-main-logo" src="{{ card.logoUrl }}" alt="{{ card.company }}">{% else %}<div class="dbc-logo-placeholder">{{ card.company }}</div>{% endif %}
+      {% if headerLogo %}
+        <img class="dbc-main-logo" src="{{ headerLogo }}" alt="{{ card.company }}">
+      {% elseif card.logoUrl %}
+        <img class="dbc-main-logo" src="{{ card.logoUrl }}" alt="{{ card.company }}">
+      {% else %}
+        <div class="dbc-logo-placeholder">{{ card.company }}</div>
+      {% endif %}
+
       <h1>{{ card.displayName ?: (card.firstName ~ ' ' ~ card.lastName) }}</h1>
       <p class="dbc-role">{{ card.position }}{% if card.position and card.company %}<br>{% endif %}{{ card.company }}</p>
       <div class="dbc-gold-line dbc-gold-line-short"></div>
 
       <a class="dbc-save" href="/visitenkarte/{{ card.slug }}/kontakt.vcf" download>
-        <span class="dbc-save-icon">▣</span><span>Kontakt speichern</span>
+        <span class="dbc-save-icon" aria-hidden="true">
+          <svg viewBox="0 0 48 48" role="img"><rect x="8" y="5" width="32" height="38" rx="4"></rect><circle cx="24" cy="18" r="6"></circle><path d="M14.5 35c1.5-6 5.3-9 9.5-9s8 3 9.5 9"></path></svg>
+        </span>
+        <span>Kontakt speichern</span>
       </a>
 
       <div class="dbc-actions">
-        <a href="tel:{{ card.phone|replace({' ': '', '/':'', '(':'', ')':''}) }}" class="dbc-action"><span class="dbc-round">☎</span><span>Anrufen</span></a>
-        <a href="mailto:{{ card.email }}" class="dbc-action"><span class="dbc-round">✉</span><span>E-Mail</span></a>
-        <a href="{{ card.website }}" target="_blank" rel="noopener" class="dbc-action"><span class="dbc-round">◎</span><span>Website</span></a>
+        <a href="tel:{{ card.phone|replace({' ': '', '/':'', '(':'', ')':''}) }}" class="dbc-action" aria-label="Anrufen">
+          <span class="dbc-round" aria-hidden="true"><svg viewBox="0 0 48 48"><path d="M14 7l7 8-5 6c3 6 7 10 13 13l6-5 8 7c-2 5-6 8-11 7C18 40 8 30 5 16 4 11 8 8 14 7z"></path></svg></span><span>Anrufen</span>
+        </a>
+        <a href="mailto:{{ card.email }}" class="dbc-action" aria-label="E-Mail">
+          <span class="dbc-round" aria-hidden="true"><svg viewBox="0 0 48 48"><rect x="5" y="10" width="38" height="28" rx="2"></rect><path d="M7 13l17 13 17-13"></path></svg></span><span>E-Mail</span>
+        </a>
+        <a href="{{ card.website }}" target="_blank" rel="noopener" class="dbc-action" aria-label="Website">
+          <span class="dbc-round" aria-hidden="true"><svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="19"></circle><path d="M5 24h38M24 5c6 5 9 12 9 19s-3 14-9 19M24 5c-6 5-9 12-9 19s3 14 9 19"></path></svg></span><span>Website</span>
+        </a>
       </div>
 
-      <div class="dbc-address"><span class="dbc-pin">⌖</span><div>{{ card.street }}<br>{{ card.postalCode }} {{ card.city }}{% if card.country %} · {{ card.country }}{% endif %}</div></div>
+      <div class="dbc-address">
+        <span class="dbc-pin" aria-hidden="true"><svg viewBox="0 0 48 48"><path d="M24 44s14-15 14-27a14 14 0 1 0-28 0c0 12 14 27 14 27z"></path><circle cx="24" cy="17" r="5"></circle></svg></span>
+        <div>{{ card.street }}<br>{{ card.postalCode }} {{ card.city }}{% if card.country %} · {{ card.country }}{% endif %}</div>
+      </div>
       <div class="dbc-gold-line"></div>
 
-      {% if brands|length %}
       <h2>Unsere Marken</h2>
       <div class="dbc-brands">
-        {% for brand in brands %}
-          <a href="{{ brand.url|default('#') }}" target="_blank" rel="noopener" class="dbc-brand">
-            {% if brand.logoUrl %}<img src="{{ brand.logoUrl }}" alt="{{ brand.name|default('Marke') }}">{% else %}<span>{{ brand.name|default('Marke') }}</span>{% endif %}
-          </a>
+        {% set configuredBrands = false %}
+        {% for brand in brandSlots %}
+          {% if brand.logo %}
+            {% set configuredBrands = true %}
+            {% if brand.url %}<a href="{{ brand.url }}" target="_blank" rel="noopener" class="dbc-brand">{% else %}<div class="dbc-brand">{% endif %}
+              <img src="{{ brand.logo }}" alt="{{ brand.name ?: 'Marke' }}">
+            {% if brand.url %}</a>{% else %}</div>{% endif %}
+          {% endif %}
         {% endfor %}
+
+        {% if not configuredBrands %}
+          {% for brand in brands %}
+            <a href="{{ brand.url|default('#') }}" target="_blank" rel="noopener" class="dbc-brand">
+              {% if brand.logoUrl %}<img src="{{ brand.logoUrl }}" alt="{{ brand.name|default('Marke') }}">{% else %}<span>{{ brand.name|default('Marke') }}</span>{% endif %}
+            </a>
+          {% endfor %}
+        {% endif %}
       </div>
-      {% endif %}
     </div>
 
     <footer class="dbc-footer">
