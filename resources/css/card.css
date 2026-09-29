@@ -163,11 +163,11 @@ a{text-decoration:none;color:inherit}
   flex:0 0 auto;
 }
 .dbc-round svg{
-  width:40px;
-  height:40px;
+  width:36px;
+  height:36px;
   fill:none;
-  stroke:currentColor;
-  stroke-width:2.6;
+  stroke:#FFFFFF;
+  stroke-width:1.8;
   stroke-linecap:round;
   stroke-linejoin:round;
 }
@@ -179,17 +179,19 @@ a{text-decoration:none;color:inherit}
   margin:25px auto 4px;
 }
 .dbc-pin{
-  width:42px;
-  height:42px;
+  width:36px;
+  height:36px;
   margin:0 auto 6px;
-  display:block;
+  display:flex;
+  align-items:center;
+  justify-content:center;
 }
 .dbc-pin svg{
-  width:42px;
-  height:42px;
+  width:36px;
+  height:36px;
   fill:none;
   stroke:var(--dbc-gold);
-  stroke-width:2.7;
+  stroke-width:1.8;
   stroke-linecap:round;
   stroke-linejoin:round;
 }
@@ -274,7 +276,7 @@ a{text-decoration:none;color:inherit}
   .dbc-round{width:58px;height:58px}
   .dbc-round svg{width:32px;height:32px}
   .dbc-address{font-size:17px;line-height:1.38;margin-top:20px}
-  .dbc-pin,.dbc-pin svg{width:35px;height:35px}
+  .dbc-pin,.dbc-pin svg{width:32px;height:32px}
   .dbc-pin{margin-bottom:5px}
   .dbc-gold-line{margin:25px 9px 17px}
   .dbc-card h2{font-size:20px;margin:12px 0 11px}
@@ -295,6 +297,7 @@ a{text-decoration:none;color:inherit}
   .dbc-action{font-size:15px}
   .dbc-round{width:54px;height:54px}
   .dbc-round svg{width:30px;height:30px}
+  .dbc-pin,.dbc-pin svg{width:30px;height:30px}
   .dbc-claim{font-size:11px;letter-spacing:2px}
   .dbc-claim i{width:30px;flex-basis:30px}
 }
