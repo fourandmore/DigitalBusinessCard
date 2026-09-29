@@ -1,0 +1,12 @@
+{
+  "defaultEntryPoint": "index.html",
+  "namespace": "DigitalBusinessCard",
+  "menuEntries": [
+    {
+      "label": "Digitale Visitenkarten",
+      "menu": "start",
+      "urlKey": "digitale-visitenkarten",
+      "entryPoint": "index.html"
+    }
+  ]
+}
