@@ -14,33 +14,57 @@ class BusinessCardController extends Controller
         if (!$card || !$card->active) {
             return $response->make('Visitenkarte nicht gefunden.', 404);
         }
+
         $brands = json_decode($card->brandsJson ?: '[]', true);
-        if (!is_array($brands)) $brands = [];
-        return $twig->render('DigitalBusinessCard::card', ['card' => $card, 'brands' => $brands]);
+        if (!is_array($brands)) {
+            $brands = [];
+        }
+
+        return $twig->render('DigitalBusinessCard::card', [
+            'card' => $card,
+            'brands' => $brands
+        ]);
     }
 
     public function vcard(string $slug, BusinessCardRepositoryContract $repo, Response $response): Response
     {
         $card = $repo->findBySlug($slug);
-        if (!$card || !$card->active) return $response->make('Not found', 404);
+        if (!$card || !$card->active) {
+            return $response->make('Not found', 404);
+        }
 
         $name = $card->displayName ?: trim($card->firstName . ' ' . $card->lastName);
-        $esc = function($v) { return str_replace(["\\", ";", ",", "\r", "\n"], ["\\\\", "\\;", "\\,", "", "\\n"], (string)$v); };
+
         $lines = [
-            'BEGIN:VCARD','VERSION:3.0',
-            'N:' . $esc($card->lastName) . ';' . $esc($card->firstName) . ';;;',
-            'FN:' . $esc($name),
-            'ORG:' . $esc($card->company),
-            'TITLE:' . $esc($card->position),
-            'TEL;TYPE=WORK,VOICE:' . $esc($card->phone),
-            'EMAIL;TYPE=INTERNET,WORK:' . $esc($card->email),
-            'URL:' . $esc($card->website),
-            'ADR;TYPE=WORK:;;' . $esc($card->street) . ';' . $esc($card->city) . ';;' . $esc($card->postalCode) . ';' . $esc($card->country),
+            'BEGIN:VCARD',
+            'VERSION:3.0',
+            'N:' . $this->escapeVCardValue($card->lastName) . ';' . $this->escapeVCardValue($card->firstName) . ';;;',
+            'FN:' . $this->escapeVCardValue($name),
+            'ORG:' . $this->escapeVCardValue($card->company),
+            'TITLE:' . $this->escapeVCardValue($card->position),
+            'TEL;TYPE=WORK,VOICE:' . $this->escapeVCardValue($card->phone),
+            'EMAIL;TYPE=INTERNET,WORK:' . $this->escapeVCardValue($card->email),
+            'URL:' . $this->escapeVCardValue($card->website),
+            'ADR;TYPE=WORK:;;' . $this->escapeVCardValue($card->street) . ';' . $this->escapeVCardValue($card->city) . ';;' . $this->escapeVCardValue($card->postalCode) . ';' . $this->escapeVCardValue($card->country),
             'END:VCARD'
         ];
-        return $response->make(implode("\r\n", $lines) . "\r\n", 200, [
-            'Content-Type' => 'text/vcard; charset=utf-8',
-            'Content-Disposition' => 'attachment; filename="' . ($card->slug ?: 'kontakt') . '.vcf"'
-        ]);
+
+        return $response->make(
+            implode("\r\n", $lines) . "\r\n",
+            200,
+            [
+                'Content-Type' => 'text/vcard; charset=utf-8',
+                'Content-Disposition' => 'attachment; filename="' . ($card->slug ?: 'kontakt') . '.vcf"'
+            ]
+        );
+    }
+
+    private function escapeVCardValue($value): string
+    {
+        return str_replace(
+            ["\\", ";", ",", "\r", "\n"],
+            ["\\\\", "\\;", "\\,", "", "\\n"],
+            (string)$value
+        );
     }
 }
