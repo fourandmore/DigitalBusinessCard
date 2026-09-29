@@ -34,7 +34,6 @@ class BusinessCardRepository implements BusinessCardRepositoryContract
     public function save(array $data, int $id = 0): BusinessCard
     {
         $card = $id > 0 ? $this->findById($id) : null;
-
         if (!$card) {
             $card = pluginApp(BusinessCard::class);
             $card->createdAt = time();
@@ -95,13 +94,11 @@ class BusinessCardRepository implements BusinessCardRepositoryContract
             $card->footerClaim = trim((string)$data['footerClaim']);
         }
         if (array_key_exists('active', $data)) {
-            $activeValue = $data['active'];
-            $card->active = $activeValue === true || $activeValue === 1 || $activeValue === '1' || $activeValue === 'true';
+            $card->active = ((string)$data['active'] === '1' || $data['active'] === true || $data['active'] === 1);
         }
 
         $card->slug = strtolower(trim(preg_replace('/[^a-zA-Z0-9\-_]/', '-', $card->slug), '-'));
         $card->updatedAt = time();
-
         $this->db->save($card);
 
         return $card;

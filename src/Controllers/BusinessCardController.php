@@ -34,7 +34,6 @@ class BusinessCardController extends Controller
         }
 
         $name = $card->displayName ?: trim($card->firstName . ' ' . $card->lastName);
-
         $lines = [
             'BEGIN:VCARD',
             'VERSION:3.0',
@@ -49,14 +48,10 @@ class BusinessCardController extends Controller
             'END:VCARD'
         ];
 
-        return $response->make(
-            implode("\r\n", $lines) . "\r\n",
-            200,
-            [
-                'Content-Type' => 'text/vcard; charset=utf-8',
-                'Content-Disposition' => 'attachment; filename="' . ($card->slug ?: 'kontakt') . '.vcf"'
-            ]
-        );
+        return $response->make(implode("\r\n", $lines) . "\r\n", 200, [
+            'Content-Type' => 'text/vcard; charset=utf-8',
+            'Content-Disposition' => 'attachment; filename="' . ($card->slug ?: 'kontakt') . '.vcf"'
+        ]);
     }
 
     private function escapeVCardValue($value): string
