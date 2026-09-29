@@ -4,9 +4,10 @@
   "namespace": "DigitalBusinessCard",
   "author": "Four & more GmbH",
   "type": "backend",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "serviceProvider": "DigitalBusinessCard\\Providers\\DigitalBusinessCardServiceProvider",
   "runOnBuild": [
-    "DigitalBusinessCard\\Migrations\\CreateBusinessCardTable"
+    "DigitalBusinessCard\\Migrations\\CreateBusinessCardTable",
+    "DigitalBusinessCard\\Migrations\\CreateSecurityTables"
   ]
 }

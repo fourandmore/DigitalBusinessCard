@@ -5,22 +5,39 @@ use Plenty\Plugin\Controller;
 use Plenty\Plugin\Http\Request;
 use Plenty\Plugin\Http\Response;
 use DigitalBusinessCard\Contracts\BusinessCardRepositoryContract;
-use DigitalBusinessCard\Config\DigitalBusinessCardConfig;
+use DigitalBusinessCard\Security\AdminSecurityService;
 
 class AdminController extends Controller
 {
-    public function index(Request $request, DigitalBusinessCardConfig $config, BusinessCardRepositoryContract $repo, Response $response): Response
+    public function login(Request $request, AdminSecurityService $security, Response $response): Response
     {
-        $denied = $this->guard($request, $config, $response);
+        $result = $security->login($request);
+        $status = (int)$result['status'];
+        $headers = $this->jsonHeaders();
+        if (!empty($result['retryAfter'])) {
+            $headers['Retry-After'] = (string)$result['retryAfter'];
+        }
+        return $response->make(json_encode($result), $status, $headers);
+    }
+
+    public function logout(Request $request, AdminSecurityService $security, Response $response): Response
+    {
+        $security->logout($request);
+        return $this->json($response, ['success' => true], 200);
+    }
+
+    public function index(Request $request, AdminSecurityService $security, BusinessCardRepositoryContract $repo, Response $response): Response
+    {
+        $denied = $this->guard($request, $security, $response);
         if ($denied !== null) {
             return $denied;
         }
         return $this->json($response, $repo->all(), 200);
     }
 
-    public function store(Request $request, DigitalBusinessCardConfig $config, BusinessCardRepositoryContract $repo, Response $response): Response
+    public function store(Request $request, AdminSecurityService $security, BusinessCardRepositoryContract $repo, Response $response): Response
     {
-        $denied = $this->guard($request, $config, $response);
+        $denied = $this->guard($request, $security, $response);
         if ($denied !== null) {
             return $denied;
         }
@@ -37,9 +54,9 @@ class AdminController extends Controller
         return $this->json($response, $card, 201);
     }
 
-    public function update(int $id, Request $request, DigitalBusinessCardConfig $config, BusinessCardRepositoryContract $repo, Response $response): Response
+    public function update(int $id, Request $request, AdminSecurityService $security, BusinessCardRepositoryContract $repo, Response $response): Response
     {
-        $denied = $this->guard($request, $config, $response);
+        $denied = $this->guard($request, $security, $response);
         if ($denied !== null) {
             return $denied;
         }
@@ -57,31 +74,38 @@ class AdminController extends Controller
         return $this->json($response, $repo->save($data, $id), 200);
     }
 
-    public function destroy(int $id, Request $request, DigitalBusinessCardConfig $config, BusinessCardRepositoryContract $repo, Response $response): Response
+    public function destroy(int $id, Request $request, AdminSecurityService $security, BusinessCardRepositoryContract $repo, Response $response): Response
     {
-        $denied = $this->guard($request, $config, $response);
+        $denied = $this->guard($request, $security, $response);
         if ($denied !== null) {
             return $denied;
         }
         return $this->json($response, ['success' => $repo->delete($id)], 200);
     }
 
-    private function guard(Request $request, DigitalBusinessCardConfig $config, Response $response)
+    private function guard(Request $request, AdminSecurityService $security, Response $response)
     {
-        $secret = trim((string)$config->adminSecret);
-        if (strlen($secret) < 12) {
-            return $this->json($response, ['error' => 'Verwaltungsschlüssel ist im Plugin noch nicht eingerichtet.'], 503);
-        }
-
-        $provided = trim((string)$request->header('X-DBC-Admin-Key'));
-        if ($provided === '' || $provided !== $secret) {
-            return $this->json($response, ['error' => 'Nicht autorisiert.'], 401);
+        if (!$security->validateSession($request)) {
+            return $this->json($response, ['error' => 'Sitzung abgelaufen oder nicht autorisiert.'], 401);
         }
         return null;
     }
 
     private function json(Response $response, $data, int $status): Response
     {
-        return $response->make(json_encode($data), $status, ['Content-Type' => 'application/json; charset=utf-8']);
+        return $response->make(json_encode($data), $status, $this->jsonHeaders());
+    }
+
+    private function jsonHeaders(): array
+    {
+        return [
+            'Content-Type' => 'application/json; charset=utf-8',
+            'Cache-Control' => 'no-store, no-cache, must-revalidate, max-age=0',
+            'Pragma' => 'no-cache',
+            'Expires' => '0',
+            'X-Content-Type-Options' => 'nosniff',
+            'X-Frame-Options' => 'DENY',
+            'Referrer-Policy' => 'no-referrer'
+        ];
     }
 }

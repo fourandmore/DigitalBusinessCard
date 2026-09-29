@@ -14,6 +14,15 @@
             "defaultValue": "",
             "isPassword": true
           }
+        },
+        "admin.path": {
+          "type": "inputText",
+          "required": true,
+          "label": "Config.adminPath",
+          "options": {
+            "tooltip": "Config.adminPathTooltip",
+            "defaultValue": "kartenverwaltung-secure"
+          }
         }
       }
     },

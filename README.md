@@ -1,49 +1,26 @@
-# DigitalBusinessCard 1.0.7
+# DigitalBusinessCard 1.0.12
 
-Digitale Visitenkarten für plentyShop LTS.
+Digitale Visitenkarten für plentyShop LTS / Ceres.
 
-## Frontend
-- Karte: `/visitenkarte/{slug}`
-- vCard: `/visitenkarte/{slug}/kontakt.vcf`
+## Sicherheit der Verwaltung
 
-## Verwaltung (Fallback ohne PlentyONE Backend-Menürechte)
-Version 1.0.7 enthält zusätzlich eine geschützte Verwaltungsseite im Shop:
+Version 1.0.12 verschärft den Schutz der alternativen Frontend-Verwaltung:
 
-`/visitenkarten-admin`
+- Verwaltungsschlüssel: mindestens 24 Zeichen empfohlen/erforderlich.
+- Individueller Verwaltungspfad in der Plugin-Konfiguration.
+- Admin-URL: `/visitenkarten-admin/<verwaltungspfad>`.
+- Nach erfolgreicher Anmeldung wird ein zufälliges, serverseitig gespeichertes Sitzungstoken verwendet. Der Verwaltungsschlüssel wird nicht in `sessionStorage` gespeichert.
+- Sitzung wird nach 15 Minuten Inaktivität im Browser gesperrt; serverseitige Sessions laufen nach 30 Minuten ohne Aktivität ab.
+- Nach 8 fehlerhaften Anmeldeversuchen wird die jeweilige Client-Adresse für 15 Minuten gesperrt.
+- Security Header: CSP, X-Frame-Options DENY, nosniff, no-referrer, Permissions-Policy und noindex.
+- Admin-Seite und API-Antworten werden nicht gecacht.
 
-Vorher in der Plugin-Konfiguration unter **Verwaltung** einen Verwaltungsschlüssel mit mindestens 12 Zeichen setzen.
-Die Verwaltungs-API akzeptiert Änderungen nur mit diesem Schlüssel im HTTP-Header `X-DBC-Admin-Key`.
+Hinweis: Der Verwaltungspfad ist eine zusätzliche Hürde, ersetzt aber nicht den starken Verwaltungsschlüssel. Die IP-Erkennung für das Rate-Limit basiert auf üblichen Proxy-Headern, die PlentyONE/CDN vorgelagert übermitteln.
 
-Damit kann die Kontaktpflege genutzt werden, selbst wenn PlentyONE den `ui.json`-Menüeintrag wegen der Rollen-/Plugin-Sichtbarkeit nicht freigibt.
+## Öffentliche Karten
 
-## Backend-EntryPoint
-Der bestehende Backend-EntryPoint `Start -> Digitale Visitenkarten` bleibt enthalten. Wenn PlentyONE ihn später für die Rolle freigibt, kann er ebenfalls verwendet werden.
+`/visitenkarte/<slug>`
 
+vCard:
 
-## Version 1.0.9 – Logos & Icons
-
-- Headerlogo sowie Markenlogo 1 bis 4 werden zentral in der Plugin-Konfiguration unter **Logos & Marken** über PlentyONE-Dateiauswahl (`inputFile`) gepflegt.
-- Für jede Marke können zusätzlich Name und Ziel-URL hinterlegt werden.
-- Die Frontend-Aktionssymbole wurden durch klare Outline-SVGs im Stil der gelieferten Referenz ersetzt (Kontakt, Telefon, E-Mail, Website, Standort).
-- Per-Nutzer-Logo und Marken-JSON bleiben intern nur als Fallback erhalten.
-
-
-## 1.0.9
-- Mobile Frontend-Abstände und Größen näher an die Referenz angepasst.
-- Aktionskarten mit warmem Off-White, feiner Kontur und angepassten Radien.
-- Logo-, Adress-, Marken- und Footer-Abstände für Smartphone-Darstellung verfeinert.
-
-
-## Version 1.0.11
-- Telefon-, E-Mail- und Website-Icons auf die bereitgestellten SVG-Formen umgestellt.
-- Diese drei Icons werden mit weißen Konturen dargestellt.
-- Standort-Icon verwendet die bereitgestellte SVG-Form in Gold.
-- Standort-Icon hat nun dieselbe sichtbare Icon-Groesse wie Telefon, E-Mail und Website.
-
-
-## Änderungen 1.0.11
-- Kontaktseiten und vCard-Antworten senden No-Cache-Header, damit geänderte Kontaktdaten sofort ausgeliefert werden.
-- CSS wird mit Versionsparameter geladen, damit Layout-Updates nicht an altem Browsercache hängen.
-- Eclipse Spa wurde aus dem Markenbereich entfernt.
-- Der Markenbereich ist jetzt dreispaltig.
-- In der Plugin-Konfiguration werden nur noch drei Markenlogos angezeigt. Die bestehenden Konfigurationsschlüssel für Eclipse, Mephisto Tools und Billiard Royal bleiben erhalten.
+`/visitenkarte/<slug>/kontakt.vcf`

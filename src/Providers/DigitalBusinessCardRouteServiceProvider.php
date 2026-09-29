@@ -11,10 +11,12 @@ class DigitalBusinessCardRouteServiceProvider extends RouteServiceProvider
         $router->get('visitenkarte/{slug}', 'DigitalBusinessCard\\Controllers\\BusinessCardController@show');
         $router->get('visitenkarte/{slug}/kontakt.vcf', 'DigitalBusinessCard\\Controllers\\BusinessCardController@vcard');
 
-        // Geschuetzte alternative Verwaltung ausserhalb der PlentyONE-Backend-Menueberechtigungen.
-        $router->get('visitenkarten-admin', 'DigitalBusinessCard\\Controllers\\AdminPageController@show');
+        // Die Verwaltungsseite ist nur unter dem in der Plugin-Konfiguration festgelegten Pfad erreichbar.
+        $router->get('visitenkarten-admin/{adminPath}', 'DigitalBusinessCard\\Controllers\\AdminPageController@show');
 
-        // CRUD-Endpunkte. Alle Endpunkte pruefen den konfigurierten Verwaltungsschluessel.
+        // Authentifizierung und geschützte CRUD-Endpunkte.
+        $router->post('digital-business-card/admin/login', 'DigitalBusinessCard\\Controllers\\AdminController@login');
+        $router->post('digital-business-card/admin/logout', 'DigitalBusinessCard\\Controllers\\AdminController@logout');
         $router->get('digital-business-card/admin/cards', 'DigitalBusinessCard\\Controllers\\AdminController@index');
         $router->post('digital-business-card/admin/cards', 'DigitalBusinessCard\\Controllers\\AdminController@store');
         $router->put('digital-business-card/admin/cards/{id}', 'DigitalBusinessCard\\Controllers\\AdminController@update')->where('id', '\\d+');

@@ -14,7 +14,7 @@
   <div id="login" class="login">
     <span class="badge">Geschützte Verwaltung</span>
     <h2>Digitale Visitenkarten</h2>
-    <p class="help">Diese Verwaltungsseite umgeht die PlentyONE-Backend-Menüberechtigungen. Gib den Verwaltungsschlüssel ein, den du in der Plugin-Konfiguration hinterlegt hast.</p>
+    <p class="help">Diese Verwaltungsseite ist zusätzlich durch einen individuellen Pfad, Login-Sperren und eine zeitlich begrenzte Sitzung geschützt. Gib deinen Verwaltungsschlüssel ein.</p>
     <label for="adminKey">Verwaltungsschlüssel</label>
     <input id="adminKey" type="password" autocomplete="current-password">
     <div class="actions"><button id="loginBtn">Öffnen</button></div>
@@ -48,22 +48,22 @@
 </div>
 <script>
 (function(){
-const API='/digital-business-card/admin/cards';let cards=[];let key='';
+const API='/digital-business-card/admin/cards';const LOGIN='/digital-business-card/admin/login';const LOGOUT='/digital-business-card/admin/logout';const IDLE_MS=15*60*1000;let cards=[];let token='';let idleTimer=null;
 const ids=['id','slug','firstName','lastName','displayName','position','company','phone','email','website','street','postalCode','city','country','logoUrl','brandsJson','imprintUrl','privacyUrl','footerClaim','active'];
 const $=id=>document.getElementById(id);const show=(el,msg)=>{el.textContent=msg||'';el.classList.toggle('show',!!msg)};
-function headers(json){const h={'X-DBC-Admin-Key':key};if(json)h['Content-Type']='application/json';return h}
+function headers(json){const h={};if(token)h['X-DBC-Admin-Token']=token;if(json)h['Content-Type']='application/json';return h}
 function data(){const o={};ids.forEach(k=>o[k]=$(k).value);return o}
 function fill(c={}){ids.forEach(k=>{if($(k))$(k).value=c[k]??(k==='active'?'1':'')});renderList(c.id)}
 function renderList(active){$('list').innerHTML='';cards.forEach(c=>{const b=document.createElement('button');b.type='button';b.textContent=(c.displayName||((c.firstName||'')+' '+(c.lastName||'')).trim()||c.slug)+'  /'+c.slug;if(c.id==active)b.classList.add('active');b.onclick=()=>fill(c);$('list').appendChild(b)})}
 async function load(){const r=await fetch(API,{headers:headers(false),credentials:'same-origin'});const j=await r.json();if(!r.ok)throw new Error(j.error||'Laden fehlgeschlagen');cards=j;renderList();if(cards[0])fill(cards[0]);}
-async function login(){key=$('adminKey').value.trim();if(!key){show($('loginNotice'),'Bitte Verwaltungsschlüssel eingeben.');return}try{await load();sessionStorage.setItem('dbcAdminKey',key);$('login').style.display='none';$('app').style.display='block';show($('loginNotice'),'')}catch(e){show($('loginNotice'),e.message)}}
+async function login(){const key=$('adminKey').value.trim();if(!key){show($('loginNotice'),'Bitte Verwaltungsschlüssel eingeben.');return}try{const r=await fetch(LOGIN,{method:'POST',headers:{'X-DBC-Admin-Key':key,'Content-Type':'application/json'},credentials:'same-origin',body:'{}'});const j=await r.json();$('adminKey').value='';if(!r.ok)throw new Error(j.error||'Anmeldung fehlgeschlagen');token=j.token||'';if(!token)throw new Error('Anmeldung fehlgeschlagen');await load();$('login').style.display='none';$('app').style.display='block';show($('loginNotice'),'');resetIdle()}catch(e){show($('loginNotice'),e.message)}}
 $('loginBtn').onclick=login;$('adminKey').addEventListener('keydown',e=>{if(e.key==='Enter')login()});
-$('logoutBtn').onclick=()=>{key='';sessionStorage.removeItem('dbcAdminKey');location.reload()};
+async function lock(sendLogout){if(idleTimer){clearTimeout(idleTimer);idleTimer=null}if(sendLogout&&token){try{await fetch(LOGOUT,{method:'POST',headers:headers(false),credentials:'same-origin'})}catch(e){}}token='';$('app').style.display='none';$('login').style.display='block';show($('loginNotice'),'Verwaltung gesperrt. Bitte erneut anmelden.')}function resetIdle(){if(!token)return;if(idleTimer)clearTimeout(idleTimer);idleTimer=setTimeout(()=>lock(true),IDLE_MS)}['click','keydown','input','touchstart','mousemove'].forEach(ev=>document.addEventListener(ev,resetIdle,{passive:true}));$('logoutBtn').onclick=()=>lock(true);
 $('newBtn').onclick=()=>fill({active:1,company:'Four & more GmbH',country:'Germany',footerClaim:'QUALITÄT FÜR GENERATIONEN',brandsJson:'[]'});
 $('form').onsubmit=async e=>{e.preventDefault();show($('notice'),'');let d=data(),id=parseInt(d.id||0);delete d.id;try{JSON.parse(d.brandsJson||'[]')}catch(x){show($('notice'),'Marken-JSON ist ungültig.');return}const r=await fetch(id?API+'/'+id:API,{method:id?'PUT':'POST',headers:headers(true),credentials:'same-origin',body:JSON.stringify(d)});const j=await r.json();if(!r.ok){show($('notice'),j.error||'Speichern fehlgeschlagen.');return}await load();fill(j);show($('notice'),'Gespeichert.')};
 $('deleteBtn').onclick=async()=>{const id=parseInt($('id').value||0);if(!id||!confirm('Karte wirklich löschen?'))return;const r=await fetch(API+'/'+id,{method:'DELETE',headers:headers(false),credentials:'same-origin'});const j=await r.json();if(!r.ok){show($('notice'),j.error||'Löschen fehlgeschlagen.');return}await load();fill({active:1});};
 $('openBtn').onclick=()=>{const s=$('slug').value.trim();if(s)window.open('/visitenkarte/'+encodeURIComponent(s),'_blank')};
-const saved=sessionStorage.getItem('dbcAdminKey');if(saved){key=saved;load().then(()=>{$('login').style.display='none';$('app').style.display='block'}).catch(()=>sessionStorage.removeItem('dbcAdminKey'))}
+
 })();
 </script>
 </body>
