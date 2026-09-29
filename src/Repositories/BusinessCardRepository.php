@@ -34,86 +34,33 @@ class BusinessCardRepository implements BusinessCardRepositoryContract
     public function save(array $data, int $id = 0): BusinessCard
     {
         $card = $id > 0 ? $this->findById($id) : null;
-
         if (!$card) {
             $card = pluginApp(BusinessCard::class);
             $card->createdAt = time();
         }
 
-        if (array_key_exists('slug', $data)) {
-            $card->slug = trim((string)$data['slug']);
-        }
-        if (array_key_exists('firstName', $data)) {
-            $card->firstName = trim((string)$data['firstName']);
-        }
-        if (array_key_exists('lastName', $data)) {
-            $card->lastName = trim((string)$data['lastName']);
-        }
-        if (array_key_exists('displayName', $data)) {
-            $card->displayName = trim((string)$data['displayName']);
-        }
-        if (array_key_exists('position', $data)) {
-            $card->position = trim((string)$data['position']);
-        }
-        if (array_key_exists('company', $data)) {
-            $card->company = trim((string)$data['company']);
-        }
-        if (array_key_exists('phone', $data)) {
-            $card->phone = trim((string)$data['phone']);
-        }
-        if (array_key_exists('email', $data)) {
-            $card->email = trim((string)$data['email']);
-        }
-        if (array_key_exists('website', $data)) {
-            $card->website = trim((string)$data['website']);
-        }
-        if (array_key_exists('street', $data)) {
-            $card->street = trim((string)$data['street']);
-        }
-        if (array_key_exists('postalCode', $data)) {
-            $card->postalCode = trim((string)$data['postalCode']);
-        }
-        if (array_key_exists('city', $data)) {
-            $card->city = trim((string)$data['city']);
-        }
-        if (array_key_exists('country', $data)) {
-            $card->country = trim((string)$data['country']);
-        }
-        if (array_key_exists('logoUrl', $data)) {
-            $card->logoUrl = trim((string)$data['logoUrl']);
-        }
-        if (array_key_exists('brandsJson', $data)) {
-            $card->brandsJson = trim((string)$data['brandsJson']);
-        }
-        if (array_key_exists('imprintUrl', $data)) {
-            $card->imprintUrl = trim((string)$data['imprintUrl']);
-        }
-        if (array_key_exists('privacyUrl', $data)) {
-            $card->privacyUrl = trim((string)$data['privacyUrl']);
-        }
-        if (array_key_exists('footerClaim', $data)) {
-            $card->footerClaim = trim((string)$data['footerClaim']);
+        $fields = [
+            'slug','firstName','lastName','displayName','position','company','phone','email','website',
+            'street','postalCode','city','country','logoUrl','brandsJson','imprintUrl','privacyUrl','footerClaim'
+        ];
+        foreach ($fields as $field) {
+            if (array_key_exists($field, $data)) {
+                $card->{$field} = trim((string)$data[$field]);
+            }
         }
         if (array_key_exists('active', $data)) {
-            $activeValue = $data['active'];
-            $card->active = $activeValue === true || $activeValue === 1 || $activeValue === '1' || $activeValue === 'true';
+            $card->active = filter_var($data['active'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) ?? ((int)$data['active'] === 1);
         }
-
         $card->slug = strtolower(trim(preg_replace('/[^a-zA-Z0-9\-_]/', '-', $card->slug), '-'));
         $card->updatedAt = time();
-
         $this->db->save($card);
-
         return $card;
     }
 
     public function delete(int $id): bool
     {
         $card = $this->findById($id);
-        if (!$card) {
-            return false;
-        }
-
+        if (!$card) return false;
         $this->db->delete($card);
         return true;
     }

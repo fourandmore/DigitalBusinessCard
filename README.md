@@ -36,6 +36,5 @@ Logo- und Markenbilder werden als URL gepflegt. Fuer die finale optische Version
 Die Struktur folgt dem klassischen PlentyONE Plugin-System (ServiceProvider, RouteServiceProvider, Twig, Plugin-Datenbank und ui.json). Vor Produktivsetzung bitte zuerst im Stage-Plugin-Set testen.
 
 
-## Version 1.0.1
-- PlentyONE Code-Check: dynamische Funktionsaufrufe im vCard-Export entfernt.
-- PlentyONE Code-Check: dynamische Property-Namen im Repository entfernt.
+## Version 1.0.2
+Backend-Menüeintrag wurde von `start` in den Setup-Systembaum unter `settings` verschoben. Nach dem Deployment ist die Oberfläche unter Einrichtung → Einstellungen → Digitale Visitenkarten vorgesehen.

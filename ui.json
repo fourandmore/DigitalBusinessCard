@@ -4,7 +4,7 @@
   "menuEntries": [
     {
       "label": "Digitale Visitenkarten",
-      "menu": "start",
+      "menu": "settings",
       "urlKey": "digitale-visitenkarten",
       "entryPoint": "index.html"
     }
