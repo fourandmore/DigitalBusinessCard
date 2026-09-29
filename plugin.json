@@ -3,8 +3,8 @@
   "description": "Digitale Visitenkarten fuer plentyShop LTS mit Backend-Pflege und vCard-Export.",
   "namespace": "DigitalBusinessCard",
   "author": "Four & more GmbH",
-  "type": "template",
-  "version": "1.0.3",
+  "type": "general",
+  "version": "1.0.4",
   "serviceProvider": "DigitalBusinessCard\\Providers\\DigitalBusinessCardServiceProvider",
   "runOnBuild": [
     "DigitalBusinessCard\\Migrations\\CreateBusinessCardTable"
