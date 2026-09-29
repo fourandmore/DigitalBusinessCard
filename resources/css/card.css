@@ -206,11 +206,11 @@ a{text-decoration:none;color:inherit}
 
 .dbc-brands{
   display:grid;
-  grid-template-columns:1fr 1fr;
+  grid-template-columns:repeat(3,minmax(0,1fr));
   gap:11px 12px;
 }
 .dbc-brand{
-  min-height:118px;
+  min-height:104px;
   border:1px solid #dedad2;
   border-radius:5px;
   display:flex;
@@ -281,8 +281,8 @@ a{text-decoration:none;color:inherit}
   .dbc-gold-line{margin:25px 9px 17px}
   .dbc-card h2{font-size:20px;margin:12px 0 11px}
   .dbc-brands{gap:9px}
-  .dbc-brand{min-height:92px;padding:9px 10px}
-  .dbc-brand img{max-width:90%;max-height:70px}
+  .dbc-brand{min-height:78px;padding:8px 7px}
+  .dbc-brand img{max-width:92%;max-height:58px}
   .dbc-footer{padding:29px 20px calc(27px + env(safe-area-inset-bottom))}
   .dbc-claim{font-size:12px;letter-spacing:2.6px;gap:10px}
   .dbc-claim i{width:44px;flex-basis:44px}

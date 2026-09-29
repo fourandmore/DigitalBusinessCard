@@ -55,31 +55,6 @@
             "defaultValue": ""
           }
         },
-        "design.brand2Logo": {
-          "type": "inputFile",
-          "required": false,
-          "label": "Config.brand2Logo",
-          "options": {
-            "tooltip": "Config.brandLogoTooltip",
-            "defaultValue": ""
-          }
-        },
-        "design.brand2Name": {
-          "type": "inputText",
-          "required": false,
-          "label": "Config.brand2Name",
-          "options": {
-            "defaultValue": "Eclipse Spa"
-          }
-        },
-        "design.brand2Url": {
-          "type": "inputText",
-          "required": false,
-          "label": "Config.brand2Url",
-          "options": {
-            "defaultValue": ""
-          }
-        },
         "design.brand3Logo": {
           "type": "inputFile",
           "required": false,

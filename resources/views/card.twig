@@ -4,14 +4,16 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#04302A">
+  <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <title>{{ card.displayName ?: (card.firstName ~ ' ' ~ card.lastName) }} – {{ card.company }}</title>
-  <link rel="stylesheet" href="{{ plugin_path('DigitalBusinessCard') }}/css/card.css">
+  <link rel="stylesheet" href="{{ plugin_path('DigitalBusinessCard') }}/css/card.css?v=1.0.11">
 </head>
 <body>
 {% set headerLogo = config('DigitalBusinessCard.design.headerLogo') %}
 {% set brandSlots = [
   {'logo': config('DigitalBusinessCard.design.brand1Logo'), 'name': config('DigitalBusinessCard.design.brand1Name'), 'url': config('DigitalBusinessCard.design.brand1Url')},
-  {'logo': config('DigitalBusinessCard.design.brand2Logo'), 'name': config('DigitalBusinessCard.design.brand2Name'), 'url': config('DigitalBusinessCard.design.brand2Url')},
   {'logo': config('DigitalBusinessCard.design.brand3Logo'), 'name': config('DigitalBusinessCard.design.brand3Name'), 'url': config('DigitalBusinessCard.design.brand3Url')},
   {'logo': config('DigitalBusinessCard.design.brand4Logo'), 'name': config('DigitalBusinessCard.design.brand4Name'), 'url': config('DigitalBusinessCard.design.brand4Url')}
 ] %}
@@ -75,9 +77,11 @@
 
         {% if not configuredBrands %}
           {% for brand in brands %}
-            <a href="{{ brand.url|default('#') }}" target="_blank" rel="noopener" class="dbc-brand">
-              {% if brand.logoUrl %}<img src="{{ brand.logoUrl }}" alt="{{ brand.name|default('Marke') }}">{% else %}<span>{{ brand.name|default('Marke') }}</span>{% endif %}
-            </a>
+            {% if brand.name|default('') != 'Eclipse Spa' %}
+              <a href="{{ brand.url|default('#') }}" target="_blank" rel="noopener" class="dbc-brand">
+                {% if brand.logoUrl %}<img src="{{ brand.logoUrl }}" alt="{{ brand.name|default('Marke') }}">{% else %}<span>{{ brand.name|default('Marke') }}</span>{% endif %}
+              </a>
+            {% endif %}
           {% endfor %}
         {% endif %}
       </div>

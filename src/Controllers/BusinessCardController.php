@@ -20,9 +20,16 @@ class BusinessCardController extends Controller
             $brands = [];
         }
 
-        return $twig->render('DigitalBusinessCard::card', [
+        $html = $twig->render('DigitalBusinessCard::card', [
             'card' => $card,
             'brands' => $brands
+        ]);
+
+        return $response->make($html, 200, [
+            'Content-Type' => 'text/html; charset=utf-8',
+            'Cache-Control' => 'no-store, no-cache, must-revalidate, max-age=0',
+            'Pragma' => 'no-cache',
+            'Expires' => '0'
         ]);
     }
 
@@ -50,7 +57,10 @@ class BusinessCardController extends Controller
 
         return $response->make(implode("\r\n", $lines) . "\r\n", 200, [
             'Content-Type' => 'text/vcard; charset=utf-8',
-            'Content-Disposition' => 'attachment; filename="' . ($card->slug ?: 'kontakt') . '.vcf"'
+            'Content-Disposition' => 'attachment; filename="' . ($card->slug ?: 'kontakt') . '.vcf"',
+            'Cache-Control' => 'no-store, no-cache, must-revalidate, max-age=0',
+            'Pragma' => 'no-cache',
+            'Expires' => '0'
         ]);
     }
 

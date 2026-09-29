@@ -34,8 +34,16 @@ Der bestehende Backend-EntryPoint `Start -> Digitale Visitenkarten` bleibt entha
 - Logo-, Adress-, Marken- und Footer-Abstände für Smartphone-Darstellung verfeinert.
 
 
-## Version 1.0.10
+## Version 1.0.11
 - Telefon-, E-Mail- und Website-Icons auf die bereitgestellten SVG-Formen umgestellt.
 - Diese drei Icons werden mit weißen Konturen dargestellt.
 - Standort-Icon verwendet die bereitgestellte SVG-Form in Gold.
 - Standort-Icon hat nun dieselbe sichtbare Icon-Groesse wie Telefon, E-Mail und Website.
+
+
+## Änderungen 1.0.11
+- Kontaktseiten und vCard-Antworten senden No-Cache-Header, damit geänderte Kontaktdaten sofort ausgeliefert werden.
+- CSS wird mit Versionsparameter geladen, damit Layout-Updates nicht an altem Browsercache hängen.
+- Eclipse Spa wurde aus dem Markenbereich entfernt.
+- Der Markenbereich ist jetzt dreispaltig.
+- In der Plugin-Konfiguration werden nur noch drei Markenlogos angezeigt. Die bestehenden Konfigurationsschlüssel für Eclipse, Mephisto Tools und Billiard Royal bleiben erhalten.
